@@ -1,41 +1,52 @@
 let rawTestData = {x:[],y:[],z:[]};
-let dataStream = false, resultChart = false, testChart, cux, mode;
+let dataStream = false, resultTestChart = false, resultUseChart = false, testChart, useChart, cux, cvx, modeUse = false, modeTest = false;
 //let confidenceData = {};
+let prevLabel = "";
 
 function useModel(){
-    mode = 'use';
     getRawData();
     dataStream = true;
-    document.getElementById("useButtonDiv").innerHTML = '<button id="LiveUseOffButton" onClick="dataStreamOff()">Stop sending data</button>';
+    document.getElementById("useButtonDiv").innerHTML = '<button id="LiveUseOffButton" onClick="useDataStreamOff()">Stop sending data</button>';
     document.getElementById("useChart").innerHTML = '<canvas id="useConfidence"></canvas>';
     document.getElementById("useChart").classList.add('chart-wrapper');
+    modeUse = true;
 }
 
 function liveTest() {
-    mode = 'test';
     getRawData();
     dataStream = true;
-    document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestOffButton" onClick="dataStreamOff()">Stop Testing</button>';
-    document.getElementById("testChart").innerHTML = '<canvas id="confidence"></canvas>';
+    document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestOffButton" onClick="testDataStreamOff()">Stop Testing</button>';
+    document.getElementById("testChart").innerHTML = '<canvas id="testConfidence"></canvas>';
     document.getElementById("testChart").classList.add('chart-wrapper');
+    modeTest = true;
 }
 
-function dataStreamOff() {
+function testDataStreamOff() {
+    resultTestChart = false;
     testChart.destroy();
-    dataStream = false;
-    rawTestData = {x:[],y:[],z:[]};
     cux = null;
-    resultChart = false;
     testChart = null;
-    if (mode == 'test'){
-        document.getElementById("testChart").innerHTML = '';
-        document.getElementById("testChart").classList.remove('chart-wrapper');
-        document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
-    } else if (mode == 'use'){
-        document.getElementById("useChart").innerHTML = '';
-        document.getElementById("useChart").classList.remove('chart-wrapper');
-        document.getElementById('useButtonDiv').innerHTML ='<button id="LiveUseButton" onClick="useModel()">Use model to send data to microBit</button>';
+    if (!modeUse){
+        dataStream = false;
     }
+    modeTest = false;
+    document.getElementById("testChart").innerHTML = '';
+    document.getElementById("testChart").classList.remove('chart-wrapper');
+    document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
+}
+
+function useDataStreamOff() {
+    resultUseChart = false;
+    useChart.destroy();
+    cvx = null;
+    useChart = null;
+    if (!modeTest){
+        dataStream = false;
+    }
+    modeUse = false;
+    document.getElementById("useChart").innerHTML = '';
+    document.getElementById("useChart").classList.remove('chart-wrapper');
+    document.getElementById('useButtonDiv').innerHTML ='<button id="LiveUseButton" onClick="useModel()">Use model to send data to microBit</button>';
 }
 
 function getRawData() {
@@ -69,18 +80,27 @@ function gotResult(error, results) {
         console.error(error);
         return;
     } else {
+        if (modeTest){
+            if (!resultTestChart){
+                createTestChart(results);
 
-        if (!resultChart){
-            createChart(results);
+            } else {
+                updateTestChart(results);
+            }
+        }
+        if (modeUse){
+            if (!resultUseChart){
+                createUseChart(results);
 
-        } else {
-            updateChart(results);
+            } else {
+                updateUseChart(results);
+            }
         }
     }
 }
 
 
-function updateChart(results){
+function updateTestChart(results){
     //console.log(results[0].label);
     let dta = [];
     if (testChart != null){
@@ -90,80 +110,149 @@ function updateChart(results){
                     let val = results[i].confidence
                     val = Math.round(val*100);
                     dta.push(val);
+        }}}
+        testChart.data.datasets[0].data = dta;
+        testChart.update();
+    }
+
+}
+
+
+function updateUseChart(results){
+    //console.log(results[0].label);
+    let dta = [];
+    if (useChart != null){
+        for (let j = 0; j < thisModelClasses.length; j++){
+            for (let i = 0; i < results.length; i++){
+                if (thisModelClasses[j] == results[i].label){
+                    let val = results[i].confidence
+                    val = Math.round(val*100);
+                    dta.push(val);
+        }}}
+        useChart.data.datasets[0].data = dta;
+        useChart.update();
+        sendtoMB(results[0].label);
+    }
+}
+
+
+function createTestChart(results){
+    cux = document.getElementById('testConfidence').getContext('2d');
+    let dta = [];
+        for (let j = 0; j < thisModelClasses.length; j++){
+            for (let i = 0; i < results.length; i++){
+                if (thisModelClasses[j] == results[i].label){
+                    let val = results[i].confidence
+                    val = Math.round(val*100);
+                    dta.push(val);
+        }}}
+
+        var chartData = {
+            labels: thisModelClasses,
+            datasets: [{
+                label: 'Confidence',
+                data: dta,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        };
+        // Chart options
+        var chartOptions = {
+            interaction: {
+                mode: 'none',  // Disable all interactions
+                intersect: false  // Disable data point hover intersections
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    min: 0,   // Set the minimum value of the y-axis
+                    max: 100 
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+        if (testChart!=null){
+            testChart.destroy();
+            testChart = null;
+        }
+        // Create the horizontal bar chart
+        testChart = new Chart(cux, {
+            type: 'bar',
+            data: chartData,
+            options: chartOptions
+        });
+        resultTestChart = true;
+}
+
+
+function createUseChart(results){
+    cvx = document.getElementById('useConfidence').getContext('2d');
+        let dta = [];
+        for (let j = 0; j < thisModelClasses.length; j++){
+            for (let i = 0; i < results.length; i++){
+                if (thisModelClasses[j] == results[i].label){
+                    let val = results[i].confidence
+                    val = Math.round(val*100);
+                    dta.push(val);
                 }
             }
         }
-        testChart.data.datasets[0].data = dta;
-        //console.log(testChart.data.datasets.data);
-        testChart.update();
 
-        if (mode == 'use'){
-            sendtoMB(results[0].label);
-        }
-    }
+        var chartData = {
+            labels: thisModelClasses,
+            datasets: [{
+                label: 'Confidence',
+                data: dta,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        };
 
-}
-
-
-function createChart(results){
-    //console.log(results);
-    if (mode == 'test'){
-    cux = document.getElementById('confidence').getContext('2d');
-    } else if (mode == 'use'){
-        cux = document.getElementById('useConfidence').getContext('2d');
-    }
-    let dta = [];
-    for (let j = 0; j < thisModelClasses.length; j++){
-        for (let i = 0; i < results.length; i++){
-            if (thisModelClasses[j] == results[i].label){
-                let val = results[i].confidence
-                val = Math.round(val*100);
-                dta.push(val);
-            }
-        }
-    }
-
-    var chartData = {
-        labels: thisModelClasses,
-        datasets: [{
-            label: 'Confidence',
-            data: dta,
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        }]
-    };
-
-    // Chart options
-    var chartOptions = {
-        interaction: {
-            mode: 'none',  // Disable all interactions
-            intersect: false  // Disable data point hover intersections
-          },
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        scales: {
-            x: {
-                min: 0,   // Set the minimum value of the y-axis
-                max: 100 
+        // Chart options
+        var chartOptions = {
+            interaction: {
+                mode: 'none',  // Disable all interactions
+                intersect: false  // Disable data point hover intersections
             },
-            y: {
-                beginAtZero: true
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    min: 0,   // Set the minimum value of the y-axis
+                    max: 100 
+                },
+                y: {
+                    beginAtZero: true
+                }
             }
-        }
-    };
+        };
 
-    // Create the horizontal bar chart
-    testChart = new Chart(cux, {
-        type: 'bar',
-        data: chartData,
-        options: chartOptions
-    });
-    resultChart = true;
+        if (useChart!=null){
+            useChart.destroy();
+            useChart = null;
+        }
+
+        // Create the horizontal bar chart
+        useChart = new Chart(cvx, {
+            type: 'bar',
+            data: chartData,
+            options: chartOptions
+        });
+        resultUseChart = true;
 }
 
 function sendtoMB(label){
-    microBit.writeUARTData(label);    
+    if (prevLabel!=label) {
+        prevLabel=label;
+        microBit.writeUARTData(prevLabel);    
+        // console.log(prevLabel);
+    }
 }
 
