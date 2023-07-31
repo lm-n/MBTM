@@ -9,6 +9,8 @@
  function trainDiv(){
   let divContent = '<button onclick="newClass()"> ➕ new class</button>';
   openAllData();
+  collapseTestMdl();
+  collapseUseMdl();
   document.getElementById("addClass").innerHTML = divContent;
   trainDivy = true;
  }
@@ -233,6 +235,12 @@ function showChartImage(b64, thisclass){
 
 }
 
+function disconnect (){
+  alert("microBit disconnected! Please pair your microBit again!");
+  document.getElementById('connectMicro').innerHTML = '<button id="searchButton" onClick="searchDevice()"> Pair your microBit</button>'
+  openConnect();
+}
+
 
 // Start the microBit
  microBit=new uBitWebBluetooth();
@@ -247,8 +255,14 @@ function showChartImage(b64, thisclass){
  });
  
  microBit.onDisconnect(function(){
+   mbconnected = false;
    console.log("disconnected");
-   document.getElementById("connected").innerHTML="false";
+   alert("microBit disconnected! Please pair your microBit again!");
+   document.getElementById('connectMicro').innerHTML = '<button id="searchButton" onClick="searchDevice()"> Pair your microBit</button>'
+   openConnect();
+   collapseAllDataDISC();
+   collapseUseMdlDISC();
+   collapseTestDISC();
  });
  
  function searchDevice(){
@@ -260,6 +274,9 @@ function showChartImage(b64, thisclass){
     document.getElementById("connectMicro").innerHTML =  "Your microBit is connected!";
     mbconnected = true;
     collapseConnect();
+    openAllData();
+    collapseTestMdl();
+    collapseUseMdl();
   }
   acc = microBit.getAccelerometer();
    //console.log(acc);

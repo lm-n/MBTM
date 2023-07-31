@@ -9,6 +9,12 @@ function openConnect(){
     document.getElementById("connectCO").innerHTML = '<a href="javascript:collapseConnect();">❎</a>';
 }
 
+function collapseAllDataDISC(){
+    document.getElementById("allDataContent").classList.remove('showContent');
+    document.getElementById("allDataContent").classList.add('hideContent');
+    document.getElementById("allDataCO").innerHTML = '';
+}
+
 function collapseAllData(){
     document.getElementById("allDataContent").classList.remove('showContent');
     document.getElementById("allDataContent").classList.add('hideContent');
@@ -32,6 +38,12 @@ function openTrainMdl(){
     document.getElementById("trainMdlCO").innerHTML = '<a href="javascript:collapseTrainMdl();">❎</a>';
 }
 
+function collapseTestDISC(){
+    document.getElementById("testMdlContent").classList.remove('showContent');
+    document.getElementById("testMdlContent").classList.add('hideContent');
+    document.getElementById("testMdlCO").innerHTML = '';
+}
+
 function collapseTestMdl(){
     document.getElementById("testMdlContent").classList.remove('showContent');
     document.getElementById("testMdlContent").classList.add('hideContent');
@@ -42,6 +54,12 @@ function openTestMdl(){
     document.getElementById("testMdlContent").classList.remove('hideContent');
     document.getElementById("testMdlContent").classList.add('showContent');
     document.getElementById("testMdlCO").innerHTML = '<a href="javascript:collapseTestMdl();">❎</a>';
+}
+
+function collapseUseMdlDISC(){
+    document.getElementById("useMdlContent").classList.remove('showContent');
+    document.getElementById("useMdlContent").classList.add('hideContent');
+    document.getElementById("useMdlCO").innerHTML = '';
 }
 
 function collapseUseMdl(){
