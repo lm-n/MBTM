@@ -5,16 +5,88 @@
  let classes = {};
  let ready2train = false;
  let count = 1;
+ let form, file;
 
- function trainDiv(){
+ function handleSubmit (event) {
+
+	// Stop the form from reloading the page
+	event.preventDefault();
+
+	// If there's no file, do nothing
+	if (!file.value.length) return;
+
+	// Create a new FileReader() object
+	let reader = new FileReader();
+
+	// Setup the callback event to run when the file is read
+	reader.onload = logFile;
+
+	// Read the file
+	reader.readAsText(file.files[0]);
+
+}
+
+function logFile (event) {
+	let str = event.target.result;
+	classes = JSON.parse(str);
+  displayUp();
+  document.getElementById("upldButton").classList.remove('hideContent');
+  document.getElementById("upldButton").classList.add('showContent');
+  document.getElementById("upld").classList.add('hideContent');
+  document.getElementById("upld").classList.remove('showContent');
+}
+
+function displayUp(){
+  document.getElementById("myClasses").innerHTML = "";
+  let keyClasses =  Object.keys(classes);
+  for (let i = 0; i < keyClasses.length; i++){
+    createClassDiv(keyClasses[i]);
+    let thisClass = keyClasses[i];
+    let elementKeys = Object.keys(classes[keyClasses[i]]);
+    for (let j = 0; j < elementKeys.length; j++){
+      let b64 = classes[keyClasses[i]][elementKeys[j]].image;
+      //console.log(thisClass);
+      showChartImage(b64, thisClass);
+    }
+  }
+  trainDwld();
+
+}
+
+function showUpload(){
+  document.getElementById("upldButton").classList.add('hideContent');
+  document.getElementById("upldButton").classList.remove('showContent');
+  document.getElementById("upld").classList.remove('hideContent');
+  document.getElementById("upld").classList.add('showContent');
+  form = document.querySelector('#upload');
+  file = document.querySelector('#file');
+  form.addEventListener('submit', handleSubmit);
+
+}
+
+ // download json
+ function downloadObjectAsJson(){
+  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(classes));
+  var downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href",     dataStr);
+  downloadAnchorNode.setAttribute("download", "mbtm.json");
+  document.body.appendChild(downloadAnchorNode); // required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
+
+// training data
+
+  function trainDiv(){
   let divContent = '<button onclick="newClass()"> ➕ new class</button>';
+  document.getElementById("upldButton").classList.remove('hideContent');
+  document.getElementById("upldButton").classList.add('showContent');
   openAllData();
   collapseTestMdl();
   collapseUseMdl();
   document.getElementById("addClass").innerHTML = divContent;
   trainDivy = true;
  }
-
 
  function nameClass(){
   let className = prompt("Please enter a name for your new class (no spaces):", "Class" + count);
@@ -33,13 +105,17 @@
   } else {
     let thisClassMod = thisClass.replace(/\s/g, '');
     classes[thisClassMod] = {};
-    let node = document.createElement("div");
-    node.id = thisClassMod;
-    let rec = "'"+thisClassMod+"'";
-    node.innerHTML = '<h3>'+thisClass+'</h3><div id = "'+thisClassMod+'recordDiv"><button id="'+thisClassMod+'recordButton" onClick="record('+rec+')">➕ new data</button></div><div id="'+thisClassMod+'chart-wrapper"></div><div id="'+thisClassMod+'Data"></div>';
-    document.getElementById("myClasses").appendChild(node)
-    count++;
+    createClassDiv(thisClassMod);
   } 
+ }
+
+ function createClassDiv(thisClassMod){
+  let node = document.createElement("div");
+  node.id = thisClassMod;
+  let rec = "'"+thisClassMod+"'";
+  node.innerHTML = '<h3>'+thisClassMod+'</h3><div id = "'+thisClassMod+'recordDiv"><button id="'+thisClassMod+'recordButton" onClick="record('+rec+')">➕ new data</button></div><div id="'+thisClassMod+'chart-wrapper"></div><div id="'+thisClassMod+'Data"></div>';
+  document.getElementById("myClasses").appendChild(node)
+  count++;
  }
 
  function record(thisclass){
@@ -200,12 +276,17 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
             });
 
             if (allGreaterThanThree){
-                ready2train = true;
-                openTrainMdl();
-                document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
+              trainDwld();
             }
         }
     }
+}
+
+function trainDwld(){
+  document.getElementById("dwnld").innerHTML = '<button id="dwnldButton" onClick="downloadObjectAsJson()">Download all data</button>' 
+  ready2train = true;
+  openTrainMdl();
+  document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
 }
 
 function calculatePeaks(array) {

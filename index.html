@@ -53,8 +53,18 @@
         <a href="javascript:openAllData();">🔽</a>
       </div>
     </h2>
+    <a id="downloadAnchorElem" style="display:none"></a>
     <div id="allDataContent" class="hideContent">
-      <div id="addClass">To add training data connect your microBit first!</div>
+      <div class="flex">
+        <div id="addClass">To add training data connect your microBit first!</div>
+        <div id="upldButton" class="hideContent">
+          <button id="uploadButton" class="buttin" onClick="showUpload()"> Upload file</button>
+        </div>
+        <div id="upld" class="hideContent">
+          <form id="upload"><label for="file">Upload data:</label><input type="file" id="file" accept=".json"><button>Upload</button></form>
+        </div>
+        <div id="dwnld"></div>
+      </div>
       <div id="myClasses"></div>
     </div>
   </div>
