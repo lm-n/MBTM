@@ -56,7 +56,7 @@ function getRawData() {
                 rawTestData.x.push(acc.x/1024);
                 rawTestData.y.push(acc.y/1024);
                 rawTestData.z.push(acc.z/1024);
-            } else if (rawTestData.x.length=41){
+            } else if (rawTestData.x.length==41){
                 rawTestData.x.shift();
                 rawTestData.y.shift();
                 rawTestData.z.shift();
