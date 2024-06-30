@@ -26,6 +26,12 @@ function openAllData(){
     document.getElementById("allDataCO").innerHTML = '<a href="javascript:collapseAllData();">❎</a>';
 }
 
+function openTestData() {
+    document.getElementById("testDataContent").classList.remove('hideContent');
+    document.getElementById("testDataContent").classList.add('showContent');
+    document.getElementById("testDataCO").innerHTML = '<a href="javascript:collapseAllData();">❎</a>';
+}
+
 function collapseTrainMdl(){
     document.getElementById("trainMdlContent").classList.remove('showContent');
     document.getElementById("trainMdlContent").classList.add('hideContent');

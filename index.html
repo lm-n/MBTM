@@ -10,8 +10,9 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/mathjs@11.8.2/lib/browser/math.js"></script>
   <script type="text/javascript" src="trainingData.js"></script>
+  <script type="text/javascript" src="testingData.js"></script>
   <script type="text/javascript" src="model.js"></script>
-  <script type="text/javascript" src="test.js"></script>
+  <script type="text/javascript" src="liveTest.js"></script>
   <script type="text/javascript" src="dummy.js"></script>
   <script type="text/javascript" src="style.js"></script>
   <link rel="stylesheet" href="style.css">
@@ -80,9 +81,32 @@
     </div>
   </div>
 
+  <div id="testData" class="corners">
+    <h2>🧪 Test your model
+      <div id="testDataCO" class="icon">
+        <a href="javascript:openTestData();">🔽</a>
+      </div>
+    </h2>
+    <a id="downloadTestAnchorElem" style="display:none"></a>
+    <div id="testDataContent" class="hideContent">
+      <div class="flex">
+        <div id="addTestClass">To add training data connect your microBit first!</div>
+        <div id="upldTestButton" class="hideContent">
+          <button id="uploadTestButton" class="buttin" onClick="showUpload()"> Upload file</button>
+        </div>
+        <div id="upldTest" class="hideContent">
+          <form id="uploadTest"><label for="file">Upload data:</label><input type="file" id="file"
+              accept=".json"><button>Upload</button></form>
+        </div>
+        <div id="dwnldTest"></div>
+      </div>
+      <div id="myTestClasses"></div>
+    </div>
+  </div>
+
 
   <div id="testMdl" class="corners">
-    <h2>🧪 Test your model
+    <h2>🧪 Live Test your model
       <div id="testMdlCO" class="icon">
         <a href="javascript:openTestMdl();">🔽</a>
       </div>
