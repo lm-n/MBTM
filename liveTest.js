@@ -89,7 +89,7 @@ function gotResult(error, results) {
         console.error(error);
         return;
     } else {
-        console.log(results);
+        //console.log(results);
         let hasInvalidConfidence = results.some(result => isNaN(result.confidence) || result.confidence === null);// Check if the confidence of any class is NaN or null
 
         if (hasInvalidConfidence) {
@@ -132,6 +132,7 @@ function updateTestChart(results){
         }}}
         testChart.data.datasets[0].data = dta;
         testChart.update();
+        //sendtoMB(results[0].label);
     }
 }
 
@@ -270,10 +271,10 @@ function createUseChart(results){
 
 
 function sendtoMB(label){
-    if (prevLabel!=label) {
+    microBit.writeUARTData(label); 
+    /*if (prevLabel!=label) {
         prevLabel=label;
         microBit.writeUARTData(prevLabel);    
         // console.log(prevLabel);
-    }
+    }*/
 }
-
