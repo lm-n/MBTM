@@ -31,13 +31,15 @@ function handleSubmit (event) {
 
 function logFile(event) {
   let str = event.target.result;
-  classes = JSON.parse(str);
-  let testClasses = Object.keys(testingData);
-  for (let i = 0; i < testClasses.length; i++) {
-    delete testingData[testClasses[i]];
-    let classDivTest = document.getElementById(testClasses[i]);
-    classDivTest.parentNode.removeChild(classDivTest);
-  }
+  let file = JSON.parse(str);
+  classes = file.training;
+  testingData = file.testing;
+  //let testClasses = Object.keys(testingData);
+  //for (let i = 0; i < testClasses.length; i++) {
+  //  delete testingData[testClasses[i]];
+  //  let classDivTest = document.getElementById(testClasses[i]);
+  //  classDivTest.parentNode.removeChild(classDivTest);
+  //}
 
   //  testingData = JSON.parse(str);
   displayUp();
@@ -50,14 +52,11 @@ function logFile(event) {
 
 function displayUp(){
  document.getElementById("myClasses").innerHTML = "";
+ document.getElementById("myTestClasses").innerHTML = "";
  let keyClasses =  Object.keys(classes);
  for (let i = 0; i < keyClasses.length; i++){
    createClassDiv(keyClasses[i]);
    let thisClass = keyClasses[i];
-
-   let testClass = thisClass + 'Test';
-   testingData[testClass] = {};
-
    let elementKeys = Object.keys(classes[keyClasses[i]]);
    for (let j = 0; j < elementKeys.length; j++){
     let imgId = thisClass + elementKeys[j];
@@ -66,6 +65,19 @@ function displayUp(){
      showChartImage(b64, thisClass, imgId);
    }
  }
+ let keyTestClasses =  Object.keys(testingData);
+ for (let i = 0; i < keyTestClasses.length; i++){
+   let thisClass = keyTestClasses[i];
+   let elementKeys = Object.keys(testingData[keyTestClasses[i]]);
+   for (let j = 0; j < elementKeys.length; j++){
+    let imgId = thisClass + elementKeys[j];
+     let b64 = testingData[keyTestClasses[i]][elementKeys[j]].image;
+    
+     showChartImage(b64, thisClass, imgId);
+   }
+ }
+
+
  trainDwld();
 
 }
@@ -83,7 +95,8 @@ function showUpload(){
 
 // download json
 function downloadObjectAsJson(){
- var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(classes));
+  var downloadJSON = {training: classes, testing: testingData};
+ var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(downloadJSON));
  var downloadAnchorNode = document.createElement('a');
  downloadAnchorNode.setAttribute("href",     dataStr);
  downloadAnchorNode.setAttribute("download", "mbtm.json");
