@@ -125,7 +125,7 @@ function newClass() {
     let testClassMod = thisClassMod + 'Test';
     testingData[testClassMod] = {};
     let keyClasses = Object.keys(testingData);
-    console.log(keyClasses.length);
+    //console.log(keyClasses.length);
     createClassDiv(thisClassMod);
   }
 }
@@ -141,7 +141,7 @@ function createClassDiv(thisClassMod) {
   let testClassMod = thisClassMod + 'Test';
   testnode.id = testClassMod;
   let testrec = "'" + testClassMod + "'";
-  testnode.innerHTML = '<div><h3 style="display: inline-block;">' + testClassMod + '</h3><div><span>Accuracy: </span></div></div><div id="' + testClassMod + 'Accuracy"></div><div id="' + testClassMod + 'recordDiv"><button id="' + testClassMod + 'recordButton" onClick="record(' + testrec + ')">➕ new data</button></div><div id="' + testClassMod + 'chart-wrapper"></div><div id="' + testClassMod + 'Data"></div>';
+  testnode.innerHTML = '<div><h3 class="testClass">' + testClassMod + '</h3></div><div id="' + testClassMod + 'Accuracy"></div><div id="' + testClassMod + 'recordDiv"><button id="' + testClassMod + 'recordButton" onClick="record(' + testrec + ')">➕ new data</button></div><div id="' + testClassMod + 'chart-wrapper"></div><div id="' + testClassMod + 'Data"></div>';
   document.getElementById("myTestClasses").appendChild(testnode);
   count++;
 }
@@ -202,7 +202,7 @@ function record(thisclass) {
   document.getElementById(thisclass + 'recordDiv').innerHTML = "🔴 recording";
   document.getElementById(thisclass + 'chart-wrapper').innerHTML = '<canvas id="' + thisclass + 'Canvas"></canvas>';
   ctx = document.getElementById(thisclass + 'Canvas').getContext('2d');
-  console.log('record called');
+  //console.log('record called');
   let chrlabels = new Array(41);
   chrlabels.fill("");
   datalines.x.push(acc.x / 1024);
@@ -262,7 +262,7 @@ function record(thisclass) {
 }
 
 function disableAllRecordButtons() {
-  console.log("disabling buttons");
+  //console.log("disabling buttons");
   // Disable all "New Data" buttons
   let recordButtons = document.querySelectorAll('[id$="recordButton"]');
   recordButtons.forEach(button => {
@@ -271,7 +271,7 @@ function disableAllRecordButtons() {
 }
 
 function enableAllRecordButtons() {
-  console.log("enabling buttons")
+  //console.log("enabling buttons")
   // Enable all "New Data" buttons
   let recordButtons = document.querySelectorAll('[id$="recordButton"]');
   recordButtons.forEach(button => {
@@ -448,7 +448,7 @@ function showChartImage(b64, thisclass, imgId) {
   let inner = '<img src="' + b64 + '" id="' + imgId + '_img" style=" height:125px;" </img>' +
     '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick=deleteDataPoint("'+thisclass+'","' + imgId + '")>🗑️</button>'
   if (testingData[thisclass] != null) {
-    inner = '<div id="' + imgId + '_pred"></div>' + inner;
+    inner = '<div id="' + imgId + '_pred" class="prediction"></div>' + inner;
   }
   div.innerHTML = inner;
   imageContainer.appendChild(div);
@@ -483,9 +483,9 @@ function disconnect (){
 // Start the microBit
 microBit=new uBitWebBluetooth();
 plotReady = false;
-console.log("mbit",microBit);
+//console.log("mbit",microBit);
 microBit.onConnect(function(){
-  console.log("connected");
+  console.log("mb connected");
 
   document.getElementById("connected").innerHTML="true";
   document.getElementById("properties").classList.toggle('inactive');
@@ -494,7 +494,7 @@ microBit.onConnect(function(){
 
 microBit.onDisconnect(function(){
   mbconnected = false;
-  console.log("disconnected");
+  console.log("mb disconnected");
   alert("microBit disconnected! Please pair your microBit again!");
   document.getElementById('connectMicro').innerHTML = '<button id="searchButton" onClick="searchDevice()"> Pair your microBit</button>'
   openConnect();

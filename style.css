@@ -110,6 +110,14 @@ a:active { text-decoration: none; }
   color: red;
 }
 
+.prediction{
+  padding-left: 200px;
+}
+
+.testClass{
+  display: inline-block;
+}
+
 .flex {
   display: flex;
   align-items: flex-end;

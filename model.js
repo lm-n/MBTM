@@ -83,7 +83,7 @@ function repredictData() {
                 let sampleId = elementKeys[j];
                 let data = testingData[thisClass][sampleId].data;
                 let b64 = testingData[thisClass][sampleId].image;
-                console.log("store test data");
+                //console.log("store test data");
                 storeTestData(thisClass, data, b64, sampleId);
             }
         }

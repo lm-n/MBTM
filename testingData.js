@@ -27,16 +27,16 @@ async function storeTestData(thisclass, thisdata, base64Image, sampleId) {
         testingData[thisclass][sampleId] = { data: thisdata, image: base64Image, m: [target, inputs], prediction: thisprediction };  
 
         if (!(thisclass in testingAccuracy)) {
-            console.log("Add new")
+            //console.log("Add new")
             testingAccuracy[thisclass] = 0;
         }
 
         calculateAccuracy(thisclass); 
     } else {
         testingData[thisclass][sampleId] = { data: thisdata, image: base64Image, m: [target, inputs]};
-        document.getElementById(thisclass + 'Accuracy').innerHTML = 'train a model to calculate accuracy';    
+        document.getElementById(thisclass + 'Accuracy').innerHTML = 'Accuracy: train model to calculate accuracy';    
     }
-    console.log("Test Accuracy: ", testingAccuracy[thisclass]);
+    //console.log("Test Accuracy: ", testingAccuracy[thisclass]);
 
     datalines = { x: [], y: [], z: [] };
     document.getElementById(thisclass + sampleId + '_pred').innerHTML = predIcon;
@@ -47,9 +47,9 @@ function classifySample(testData) {
     return new Promise((resolve) => {
         thisModel.classify(data, function (err, result) {
             if (err) {
-                console.error(err);
+                //console.error(err);
             } else {
-                console.log(result[0].label);
+                //console.log(result[0].label);
                 resolve(result[0].label);
             }
 
@@ -70,5 +70,6 @@ function calculateAccuracy(thisclass) {
     }
 
     testingAccuracy[thisclass] = (sum / elementKeys.length).toFixed(2);
-    document.getElementById(thisclass + 'Accuracy').innerHTML = testingAccuracy[thisclass]; 
+    let thisAcc = "Accuracy: " + testingAccuracy[thisclass];
+    document.getElementById(thisclass + 'Accuracy').innerHTML = thisAcc; 
 }

@@ -96,7 +96,7 @@ function gotResult(error, results) {
             let confirmation = window.confirm("Some classes have invalid confidence values and can be fixed by diversifying your data. Either create a new class or increase the diversity in your existing classes.");
 
             if (confirmation) {
-                console.log("hello")
+                //console.log("hello")
                 testDataStreamOff();
                 useDataStreamOff();
             }
@@ -135,35 +135,6 @@ function updateTestChart(results){
     }
 }
 
-/* from phil
-function updateTestChart(results) {
-    //console.log(results[0].label);
-    let dta = [];
-    let max = Number.MIN_VALUE;
-    for (let j = 0; j < thisModelClasses.length; j++) {
-        for (let i = 0; i < results.length; i++) {
-            console.log("thisModel: " + thisModelClasses[j]);
-            console.log("result: " + results[i].label);
-            if (thisModelClasses[j] == results[i].label) {
-                console.log("Update val");
-                let val = results[i].confidence
-                val = Math.round(val * 100);
-                dta.push(val);
-                if (val > max) {
-                    console.log("Update max");
-                    max = val;
-                    maxLabel = results[i].label;
-                }
-            }
-        }
-    }
-    if (testChart != null) {
-        testChart.data.datasets[0].data = dta;
-        testChart.update();
-    }
-
-}*/
-
 
 function updateUseChart(results){
     //console.log(results[0].label);
@@ -181,35 +152,6 @@ function updateUseChart(results){
         sendtoMB(results[0].label);
     }
 }
-
-/* from Phil
-function updateUseChart(results) {
-    //console.log(results[0].label);
-    let dta = [];
-    let max = Number.MIN_VALUE;
-
-
-    for (let j = 0; j < thisModelClasses.length; j++) {
-        for (let i = 0; i < results.length; i++) {
-            if (thisModelClasses[j] == results[i].label) {
-                console.log("Update val");
-                let val = results[i].confidence
-                val = Math.round(val * 100);
-                dta.push(val);
-                if (val > max) {
-                    console.log("Update max");
-                    max = val;
-                    maxLabel = results[i].label;
-                }
-            }
-        }
-    }
-    if (useChart != null) {
-        useChart.data.datasets[0].data = dta;
-        useChart.update();
-        sendtoMB(results[0].label);
-    }
-}*/ 
 
 
 
@@ -266,76 +208,6 @@ function createTestChart(results){
         });
         resultTestChart = true;
 }
-
-
-/* from Phil
-function createTestChart(results) {
-    if (document.getElementById('useConfidence') != null) {
-        cux = document.getElementById('testConfidence').getContext('2d');
-    }
-    let dta = [];
-    let max = Number.MIN_VALUE;
-    for (let j = 0; j < thisModelClasses.length; j++) {
-        for (let i = 0; i < results.length; i++) {
-            console.log("thisModel: " + thisModelClasses[j]);
-            console.log("result: " + results[i].label);
-            if (thisModelClasses[j] == results[i].label) {
-                console.log("Update val");
-                let val = results[i].confidence
-                val = Math.round(val * 100);
-                dta.push(val);
-                if (val > max) {
-                    console.log("Update max");
-                    max = val;
-                    maxLabel = results[i].label;
-                }
-            }
-        }
-    }
-
-    if (document.getElementById('useConfidence') != null) {
-        var chartData = {
-            labels: thisModelClasses,
-            datasets: [{
-                label: 'Confidence',
-                data: dta,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        };
-        // Chart options
-        var chartOptions = {
-            interaction: {
-                mode: 'none',  // Disable all interactions
-                intersect: false  // Disable data point hover intersections
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-            indexAxis: 'y',
-            scales: {
-                x: {
-                    min: 0,   // Set the minimum value of the y-axis
-                    max: 100
-                },
-                y: {
-                    beginAtZero: true
-                }
-            }
-        };
-        if (testChart != null) {
-            testChart.destroy();
-            testChart = null;
-        }
-        // Create the horizontal bar chart
-        testChart = new Chart(cux, {
-            type: 'bar',
-            data: chartData,
-            options: chartOptions
-        });
-        resultTestChart = true;
-    }
-} */
 
 function createUseChart(results){
     cvx = document.getElementById('useConfidence').getContext('2d');
@@ -394,72 +266,6 @@ function createUseChart(results){
         });
         resultUseChart = true;
 }
-
-/*
-function createUseChart(results) {
-    cvx = document.getElementById('useConfidence').getContext('2d');
-    let dta = [];
-    let max = Number.MIN_VALUE;
-    for (let j = 0; j < thisModelClasses.length; j++) {
-        for (let i = 0; i < results.length; i++) {
-            if (thisModelClasses[j] == results[i].label) {
-                console.log("Update val");
-                let val = results[i].confidence
-                val = Math.round(val * 100);
-                dta.push(val);
-                if (val > max) {
-                    console.log("Update max");
-                    max = val;
-                    maxLabel = results[i].label;
-                }
-            }
-        }
-    }
-
-    var chartData = {
-        labels: thisModelClasses,
-        datasets: [{
-            label: 'Confidence',
-            data: dta,
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        }]
-    };
-
-    // Chart options
-    var chartOptions = {
-        interaction: {
-            mode: 'none',  // Disable all interactions
-            intersect: false  // Disable data point hover intersections
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        scales: {
-            x: {
-                min: 0,   // Set the minimum value of the y-axis
-                max: 100
-            },
-            y: {
-                beginAtZero: true
-            }
-        }
-    };
-
-    if (useChart != null) {
-        useChart.destroy();
-        useChart = null;
-    }
-
-    // Create the horizontal bar chart
-    useChart = new Chart(cvx, {
-        type: 'bar',
-        data: chartData,
-        options: chartOptions
-    });
-    resultUseChart = true;
-}*/
 
 
 
